@@ -70,7 +70,7 @@ class Laberinto(Frame):
             self._drawLaberinto()
             self._drawHeads()
         except :
-            print("algo paso")
+            print("algo paso aqui")
     
     def _drawLaberinto(self):
         
