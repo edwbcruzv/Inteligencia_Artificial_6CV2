@@ -1,55 +1,41 @@
-
-
+from MiBusqueda import *
+from LaberintoTemplate import *
 class Agente:
     ID_int=0
      # celula y la orientacion
         #      0   1   2
         #    +---+---+---+
-        #  0 |   | N |   |
+        #  0 |   | U |   |
         #    +---+---+---+
-        #  1 | O |   | E |
+        #  1 | L |   | R |
         #    +---+---+---+
-        #  2 |   | S |   |
+        #  2 |   | D |   |
         #    +---+---+---+
     
-    def __init__(self,*args):
-        
-        if len(args)==1:
-            self.__ID=args[0]
-        elif len(args)==3:
-            self.__Constructor1(args)
-        else:
+    def __init__(self,origen:tuple,destino:tuple,color):
+        self.Laberinto = Laberinto("Laberinto2.txt", ['U', 'D', 'L', 'R'])
+        try:
+            self.Problema = Problema(estado_inicial=self.Laberinto.getEstado(origen[0],origen[1]),
+                                estados_objetivos=[self.Laberinto.getEstado(destino[0],destino[1])],
+                                 espacio_estados=self.Laberinto.EspacioEstados)
+        except:
+            print("No se definio el problema correctamente")
             return None
         
+        self.Arbol_Solucion=None
+        self.Trayectoria=None
+        self.Lista_Camino=None
         
-    def __Constructor1(self,args):
-        # args=(color,orientation,position:list(2))
-        if args[1] == 'N' or args[1] == 'E' or args[1] == 'O' or args[1] == 'S':
-            self.__Orientation=args[1]
-        else:
-            print("Fallo 1")
-            return None
-        if len(args[2])==2:
-            #(x:int,y:int)
-            # print(position)
-            self.__X_pos=int(args[2][0]) 
-            self.__Y_pos=int(args[2][1])
-        else:
-            print("Fallo 2")
-            return None
+        self.__F, self.__C = self.__labelToCord(origen[0], origen[1])
+        self.__Color=color
         
-        self.__Color=args[0]
-        self.__ID=self.generateID()
-        self.__Evaluate=False
     
-    @classmethod
-    def generateID(cls):
-        cls.ID_int+=1
-        return cls.ID_int
+    def __labelToCord(self,num:int,letra:str):
+        return num-1,ord(letra)-65
     
-    @classmethod
-    def deleteID(cls):
-        cls.ID_int-=1
+    def calcula(self):
+        self.Arbol_Solucion,self.Trayectoria = BFS(problema=self.Problema)
+        self.Lista_Camino = self.Arbol_Solucion.soluciones(problema=self.Problema)[0]
     """
     #------------------------------------
     @property
@@ -75,39 +61,32 @@ class Agente:
     
     #------------------------------------
     @property
-    def ID(self):
-        # Documentacion de ID 
-        return self.__ID
+    def F(self):
+        # Documentacion de F 
+        return self.__F
+    
+    @F.setter
+    def F(self,new_F):
+        self.__F=new_F
+    
+    @F.deleter
+    def F(self):
+        del self.__F
     #------------------------------------
     
     #------------------------------------
     @property
-    def X_pos(self):
-        # Documentacion de X_pos 
-        return self.__X_pos
+    def C(self):
+        # Documentacion de C 
+        return self.__C
     
-    @X_pos.setter
-    def X_pos(self,new_X_pos):
-        self.__X_pos=new_X_pos
+    @C.setter
+    def C(self,new_C):
+        self.__C=new_C
     
-    @X_pos.deleter
-    def X_pos(self):
-        del self.__X_pos
-    #------------------------------------
-    
-    #------------------------------------
-    @property
-    def Y_pos(self):
-        # Documentacion de Y_pos 
-        return self.__Y_pos
-    
-    @Y_pos.setter
-    def Y_pos(self,new_Y_pos):
-        self.__Y_pos=new_Y_pos
-    
-    @Y_pos.deleter
-    def Y_pos(self):
-        del self.__Y_pos
+    @C.deleter
+    def C(self):
+        del self.__C
     #------------------------------------
     
     #------------------------------------
@@ -124,65 +103,10 @@ class Agente:
         del self.__Orientation
     #------------------------------------
     
-    #------------------------------------
-    @property
-    def Evaluate(self):
-        # Documentacion de Evaluate 
-        return self.__Evaluate
     
-    @Evaluate.setter
-    def Evaluate(self,new_Evaluate):
-        self.__Evaluate=new_Evaluate
     
-    @Evaluate.deleter
-    def Evaluate(self):
-        del self.__Evaluate
-    #------------------------------------
+    def nextState(self):
+        pass
     
-    def moveForward(self):
-        if self.Orientation == 'N':
-            self.Y_pos=self.Y_pos-1
-        elif self.Orientation == 'O':
-            self.X_pos=self.X_pos-1
-        elif self.Orientation == 'S':
-            self.Y_pos=self.Y_pos+1
-        elif self.Orientation == 'E':
-            self.X_pos=self.X_pos+1
-    
-    def rotate90Left(self): # Izq
-        if self.Orientation == 'N':
-            self.Orientation = 'O'
-        elif self.Orientation == 'O':
-            self.Orientation = 'S'
-        elif self.Orientation == 'S':
-            self.Orientation = 'E'
-        elif self.Orientation == 'E':
-            self.Orientation ='N'
-            
-    def rotate90Right(self): # Der
-        if self.Orientation == 'N':
-            self.Orientation = 'E'
-        elif self.Orientation == 'E':
-            self.Orientation = 'S'
-        elif self.Orientation == 'S':
-            self.Orientation = 'O'
-        elif self.Orientation == 'O':
-            self.Orientation ='N'
-    
-    def rotate180(self): # Atras
-        if self.Orientation == 'N':
-            self.Orientation = 'S'
-        elif self.Orientation == 'S':
-            self.Orientation = 'N'
-        elif self.Orientation == 'E':
-            self.Orientation = 'O'
-        elif self.Orientation == 'O':
-            self.Orientation ='E'
-    
-    def __eq__(self, __o: object) -> bool:
-        if isinstance(__o,Agente):
-            return self.ID==__o.ID
-        elif type(__o)==list:
-            return __o[0]==self.X_pos and __o[1]==self.Y_pos
-        elif type(__o)==int:
-            return self.ID==__o
+    def backState(self):
+        pass
