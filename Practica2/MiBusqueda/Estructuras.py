@@ -65,6 +65,15 @@ class Estado:
     def __hash__(self) -> int:
         return hash(self.Nombre*len(self.Nombre))
 
+class EstadoH(Estado):
+    
+    def __init__(self, nombre: str, acciones: list,heuristica:float|int) -> None:
+        super().__init__(nombre, acciones)
+        self.__Heuristica=heuristica
+        
+    @property
+    def Heuristica(self)->str:
+        return self.__Heuristica
 
 class Problema:
     """
@@ -157,8 +166,6 @@ class Nodo:
         self.Padre=padre
         self.Hijos = []
         self.Costo=0
-        self.Heuristica=0
-        self.FNValor=0
     
 
     def expandir(self, problema:Problema)->list:
@@ -267,3 +274,11 @@ class Nodo:
         list_states_actions_cost.reverse()
         
         return list_states,list_states_actions,list_states_actions_cost
+
+
+class NodoH(Nodo):
+    
+    def __init__(self, estado, accion_padre=None, acciones=None, padre=None) -> None:
+        super().__init__(estado, accion_padre, acciones, padre)
+        self.Heuristica=0
+        self.FNValor=0
