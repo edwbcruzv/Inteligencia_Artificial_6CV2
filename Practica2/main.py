@@ -2,7 +2,7 @@ from time import sleep
 from tkinter import Frame
 import numpy as np
 from TableroFrame import *
-from LaberintoTemplate import *
+from TerrenoTemplate import *
 from Constantes import *
 from Agente import *
 from Controls import *
@@ -13,13 +13,13 @@ class Window(Frame):
     
     def __init__(s,master,width:int,height:int):
         # Constructor de Frame()
-        super().__init__(master,width=width,height=height,background="gray")
+        super().__init__(master,width=width,height=height,background=BLACK)
         s.Width=width
         # empaquetando elementos dentro de su ventana contenedora
-        s.Laberinto = None
+        s.Terreno = None
         s.Centinela_Auto=False
         
-        s.Laberinto_Txt = "Laberinto2.txt"
+        s.Terreno_Txt = "Terrenos/Humano.txt"
         s.createWidgets()
         s.changeWidgets()
         s.pack()
@@ -27,9 +27,9 @@ class Window(Frame):
     # Aqui se crean todos los widgets del frame
     def createWidgets(s):
         # se define el tamaño estatico del canvas en pixeles y la posicion
-        matriz_laberinto = np.loadtxt(s.Laberinto_Txt, dtype=int)
-        s.Lab_cv=TableroFrame(master=s,matrix_laberinto=matriz_laberinto,cells_side=matriz_laberinto.shape[0],size_px=700)
-        s.Lab_cv.place(x=(s.Width/2)+s.Lab_cv.SideCellPX, y=s.Lab_cv.SideCellPX)
+        matriz_terreno = np.loadtxt(s.Terreno_Txt, dtype=int)
+        s.Ter_cv=HumanoFrame(master=s,matrix_laberinto=matriz_terreno,cells_side=matriz_terreno.shape[0],size_px=700)
+        s.Ter_cv.place(x=(s.Width/2)+s.Ter_cv.SideCellPX, y=s.Ter_cv.SideCellPX)
         
         str_lbl_char = []
         str_lbl_num = []
@@ -38,7 +38,7 @@ class Window(Frame):
             str_lbl_char.append(str(chr(l+65)))
             str_lbl_num.append(str(n+1))
         
-        LX = LY = s.Lab_cv.SideCellPX
+        LX = LY = s.Ter_cv.SideCellPX
         POS_X = (s.Width/2)+LX
         POS_Y = 0
         labels_X=[]
@@ -61,7 +61,7 @@ class Window(Frame):
         s.Controls.Columna_Destino.config(values=str_lbl_char)
         
         s.Controls.place(x=10, y=10)
-        
+
     def changeWidgets(s):
         s.Controls.Btn_Cargar.config(command=s.__Cargar)
         s.Controls.Btn_Iniciar.config(command=s.__Iniciar)
@@ -78,9 +78,9 @@ class Window(Frame):
     
     def __Vista_Agente(s):
         if s.Controls.VistaAgente.get():
-            s.Lab_cv.render()
+            s.Ter_cv.render()
         else:
-            s.Lab_cv.hide()
+            s.Ter_cv.hide()
     
     def __Cargar(s):
         
@@ -88,7 +88,7 @@ class Window(Frame):
             return
         list_orden_acciones = [a for a in s.Controls.Lbl_Estado_Orden["text"]]
         # print(list_orden_acciones)
-        s.Laberinto = Laberinto(s.Laberinto_Txt, list_orden_acciones)
+        s.Terreno = Terreno(s.Terreno_Txt, list_orden_acciones)
         
         s.f_o=s.Controls.Fila_Origen.get()
         s.c_o=s.Controls.Columna_Origen.get()
@@ -98,20 +98,20 @@ class Window(Frame):
         print(s.f_o, s.c_o, s.f_d, s.c_d)
         
         # al se creado el agente esta listo para moverlo
-        s.agente = Agente(s.Laberinto, origen=(int(s.f_o), s.c_o),
+        s.agente = Agente(s.Terreno, origen=(int(s.f_o), s.c_o),
                           destino=(int(s.f_d), s.c_d), color=COLOR_3)
         if not s.agente.calcular(s.Controls.AlgoritmoNoInfo.get()):
             print("No se puede resolver")
             return None
         # Se coloca al agente en el estado inicial
-        s.Lab_cv.drawAgent(s.agente.F, s.agente.C, None)
+        s.Ter_cv.drawAgent(s.agente.F, s.agente.C, None)
         
         s.Controls.cargar()
         s.Centinela_Auto=True
         
     def __Iniciar(s):
         while s.Centinela_Auto and s.__Next():
-            s.Lab_cv.update()
+            s.Ter_cv.update()
             sleep(s.Controls.Scale_Velocidad.get())
         print("hecho")
     def __Pausar(s):
@@ -121,7 +121,7 @@ class Window(Frame):
         #2inicia los controles
         s.Controls.reiniciar()
         # se resetea el laberinto
-        s.Lab_cv.clear()
+        s.Ter_cv.clear()
         
         s.__Vista_Agente()
     def __L(s):
@@ -153,35 +153,35 @@ class Window(Frame):
     
     def __Camino_Back(s):
         elem = s.agente.backCamino()
-        s.Lab_cv.drawAgent(s.agente.F, s.agente.C)
+        s.Ter_cv.drawAgent(s.agente.F, s.agente.C)
         return elem
 
     def __Camino_Next(s):
         elem = s.agente.nextCamino()
-        s.Lab_cv.drawAgent(s.agente.F, s.agente.C)
+        s.Ter_cv.drawAgent(s.agente.F, s.agente.C)
         return elem
         
     def __Nodo_Back(s):
         elem = s.agente.backNode()
-        s.Lab_cv.drawAgent(s.agente.F, s.agente.C)
+        s.Ter_cv.drawAgent(s.agente.F, s.agente.C)
         return elem
     def __Nodo_Next(s):
         elem = s.agente.nextNode()
-        s.Lab_cv.drawAgent(s.agente.F, s.agente.C)
+        s.Ter_cv.drawAgent(s.agente.F, s.agente.C)
         return elem
     def __Estado_Back(s):
         elem=s.agente.backState()
         if isinstance(elem, Estado):
-            s.Lab_cv.drawAgent(s.agente.F, s.agente.C)
+            s.Ter_cv.drawAgent(s.agente.F, s.agente.C)
         elif isinstance(elem, Accion):
-            s.Lab_cv.drawAgent(s.agente.F, s.agente.C,True)
+            s.Ter_cv.drawAgent(s.agente.F, s.agente.C,True)
         return elem
     def __Estado_Next(s):
         elem=s.agente.nextState()
         if isinstance(elem, Estado):
-            s.Lab_cv.drawAgent(s.agente.F, s.agente.C)
+            s.Ter_cv.drawAgent(s.agente.F, s.agente.C)
         elif isinstance(elem, Accion):
-            s.Lab_cv.drawAgent(s.agente.F, s.agente.C,True)
+            s.Ter_cv.drawAgent(s.agente.F, s.agente.C,True)
         return elem
             
 if __name__ == '__main__':

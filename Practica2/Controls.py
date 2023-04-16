@@ -1,4 +1,4 @@
-from tkinter import BooleanVar, Checkbutton, IntVar, Radiobutton, Tk, Label, Frame, Entry, Button, Scale
+from tkinter import BooleanVar, Checkbutton, IntVar, PhotoImage, Radiobutton, Tk, Label, Frame, Entry, Button, Scale
 from tkinter.ttk import Combobox
 
 
@@ -6,7 +6,7 @@ class Controls(Frame):
 
     def __init__(s, master):
         # Constructor de Frame()
-        super().__init__(master, width=580, height=650, background="gray")
+        super().__init__(master, width=580, height=440, background="gray")
 
         # s.InverterColorCells = BooleanVar()
         # s.OptionBorder = IntVar()
@@ -42,9 +42,8 @@ class Controls(Frame):
         
         s.Scale_Velocidad.config(state="active")
 
-        s.Rbtn_A_BFS.config(state="active")
-        s.Rbtn_A_DFS.config(state="active")
-        s.Rbtn_A_DFS_R.config(state="active")
+        s.Rbtn_A_Voraz.config(state="active")
+        s.Rbtn_A_AE.config(state="active")
 
         s.Rbtn_Camino.config(state="active")
         s.Rbtn_Nodos.config(state="active")
@@ -78,9 +77,8 @@ class Controls(Frame):
         
         s.Scale_Velocidad.config(state="disabled")
         
-        s.Rbtn_A_BFS.config(state="disabled")
-        s.Rbtn_A_DFS.config(state="disabled")
-        s.Rbtn_A_DFS_R.config(state="disabled")
+        s.Rbtn_A_Voraz.config(state="disabled")
+        s.Rbtn_A_AE.config(state="disabled")
         
         s.Rbtn_Camino.config(state="disabled")
         s.Rbtn_Nodos.config(state="disabled")
@@ -93,6 +91,9 @@ class Controls(Frame):
 
     # Aqui se crean todos los widgets del frame
     def createWidgets(s):
+        tabla = PhotoImage(file="Borrame.png")
+        imagen = Label(s, image=tabla)
+        imagen.place(x=130, y=10)
         
         s.__controles1()
         s.__controles2()
@@ -176,14 +177,11 @@ class Controls(Frame):
         ALTURA = 30
         POS_X = 250
         POS_Y = 200
-        s.Rbtn_A_BFS=Radiobutton(s,text="BFS",variable=s.AlgoritmoNoInfo,value=0)
-        s.Rbtn_A_BFS.place(x=POS_X, y=POS_Y, width=ANCHO, height=ALTURA)
+        s.Rbtn_A_Voraz=Radiobutton(s,text="Voraz",variable=s.AlgoritmoNoInfo,value=0)
+        s.Rbtn_A_Voraz.place(x=POS_X, y=POS_Y, width=ANCHO, height=ALTURA)
         
-        s.Rbtn_A_DFS=Radiobutton(s,text="DFS",variable=s.AlgoritmoNoInfo,value=1)
-        s.Rbtn_A_DFS.place(x=POS_X, y=ALTURA+POS_Y, width=ANCHO, height=ALTURA)
-        
-        s.Rbtn_A_DFS_R=Radiobutton(s,text="DFS_R",variable=s.AlgoritmoNoInfo,value=2)
-        s.Rbtn_A_DFS_R.place(x=POS_X, y=(ALTURA*2)+POS_Y, width=ANCHO, height=ALTURA)
+        s.Rbtn_A_AE=Radiobutton(s,text="A*",variable=s.AlgoritmoNoInfo,value=1)
+        s.Rbtn_A_AE.place(x=POS_X, y=ALTURA+POS_Y, width=ANCHO, height=ALTURA)
         
     def __controles6(s):
         ANCHO = 70

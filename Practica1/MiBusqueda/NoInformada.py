@@ -30,12 +30,6 @@ def __nodoHijo(problema: Problema, padre: Nodo, accion: Accion) -> Nodo:  # List
     padre.addNodo(hijo)
     return hijo
 
-
-def nodoRaiz(problema: Problema)->Nodo:
-    return __nodoRaiz(problema)
-
-def nodoHijo(problema: Problema, padre: Nodo, accion: Accion) -> Nodo:
-    return __nodoHijo(problema, padre, accion)
 # Busqueda primero por anchura
 def BFS(problema: Problema,info:bool=False):  # Listo
     raiz=__nodoRaiz(problema)
