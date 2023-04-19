@@ -1,5 +1,5 @@
 from MiBusqueda import *
-from LaberintoTemplate import *
+from TerrenoTemplate import *
 class Agente:
     ID_int=0
      # celula y la orientacion
@@ -12,15 +12,15 @@ class Agente:
         #  2 |   | D |   |
         #    +---+---+---+
     
-    def __init__(self,laberinto:Laberinto,origen:tuple,destino:tuple,color):
+    def __init__(self,terreno:Terreno,origen:tuple,destino:tuple,color):
         self.Index_Trayectoria = None
         self.Index_Nodo = None
         self.__Color=color
-        self.Laberinto = laberinto
+        self.Terreno = terreno
         try:
-            self.Problema = Problema(estado_inicial=self.Laberinto.getEstado(origen[0],origen[1]),
-                                estados_objetivos=[self.Laberinto.getEstado(destino[0],destino[1])],
-                                espacio_estados=self.Laberinto.EspacioEstados)
+            self.Problema = Problema(estado_inicial=self.Terreno.getEstado(origen[0],origen[1]),
+                                estados_objetivos=[self.Terreno.getEstado(destino[0],destino[1])],
+                                espacio_estados=self.Terreno.EspacioEstados)
             self.__F, self.__C = self.__labelToCord(str(origen[0])+str(origen[1]))
         except:
             print("No se definio el problema correctamente")
@@ -47,11 +47,9 @@ class Agente:
         self.Lista_Camino=None
         try:
             if opcion==0:
-                Arbol_Solucion,self.Trayectoria = BFS(problema=self.Problema)
+                Arbol_Solucion,self.Trayectoria = UCS_V(problema=self.Problema)
             elif opcion==1:
-                Arbol_Solucion, self.Trayectoria = DFS(problema=self.Problema)
-            elif opcion==2:
-                Arbol_Solucion= DFS_R(problema=self.Problema)
+                Arbol_Solucion, self.Trayectoria = UCS_A(problema=self.Problema)
         
         except:
             print("El algoritmo no resolvio el problema.")
@@ -90,7 +88,7 @@ class Agente:
         
 
     """
-    #------------------------------------
+    #------------------------------------|
     @property
     def Atributo(self):
         # Documentacion de Atributo 
