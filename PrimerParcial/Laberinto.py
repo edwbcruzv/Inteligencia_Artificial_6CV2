@@ -68,7 +68,7 @@ class Laberinto(Frame):
         self.canva.delete("all")
         try:
             self._drawLaberinto()
-            self._drawHeads()
+            #self._drawHeads()
         except :
             print("algo paso aqui")
     
