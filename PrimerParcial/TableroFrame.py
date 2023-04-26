@@ -57,7 +57,7 @@ class TableroFrame(Frame):
         self.__drawCell(c*self.SideCellPX,f*self.SideCellPX,(c*self.SideCellPX)+self.SideCellPX,(f*self.SideCellPX)+self.SideCellPX,fill,outline)
     
         # Solo se recibe la coordenada, ya que el color los buscara solo
-    def __paintCellCord(self, f: int, c: int):
+    def paintCellCord(self, f: int, c: int):
         if self.Matrix_Laberinto[f][c]==1:
             self.drawCellCord(f, c, GRAY, BLACK)
         else:
@@ -75,7 +75,7 @@ class TableroFrame(Frame):
         self.canva.delete("all")
         for f in range(0, self.CellsSide):
             for c in range(0, self.CellsSide):
-                self.__paintCellCord(f,c)
+                self.paintCellCord(f,c)
         self.canva.pack()  # no quitar esta linea
         
         # oculta el laberinto
@@ -93,48 +93,116 @@ class TableroFrame(Frame):
         
     def __paintCellsNeighbors(self,f: int, c: int):
         if c-1 >= 0 :
-            self.__paintCellCord(f ,c-1)
+            self.paintCellCord(f ,c-1)
         if c+1 < self.Columnas :
-            self.__paintCellCord(f ,c+1)
+            self.paintCellCord(f ,c+1)
         if f-1 >= 0:
-            self.__paintCellCord(f-1 ,c)
+            self.paintCellCord(f-1 ,c)
         if f+1 < self.Filas:
-            self.__paintCellCord(f+1 ,c)
+            self.paintCellCord(f+1 ,c)
     
     # def __paintCellOrientation(self, f: int, c: int):
     #     if c-1 >= 0 and orientation == 'L':
-    #         self.__paintCellCord(f, c-1)
+    #         self.paintCellCord(f, c-1)
     #     elif c+1 < self.Columnas and orientation == 'R':
-    #         self.__paintCellCord(f, c+1)
+    #         self.paintCellCord(f, c+1)
     #     elif f-1 >= 0 and orientation == 'U':
-    #         self.__paintCellCord(f-1, c)
+    #         self.paintCellCord(f-1, c)
     #     elif f+1 < self.Filas and orientation == 'D':
-    #         self.__paintCellCord(f+1, c)
+    #         self.paintCellCord(f+1, c)
             
     def drawAgent(self,f:int,c:int,orientation:bool=False):
         f_aux,c_aux=self.getCordsAgent()
         
         if f_aux!=None and c_aux!=None:
-            self.__paintCellCord(f_aux, c_aux)
+            self.paintCellCord(f_aux, c_aux)
         self.Matrix_Explorer[f][c]=1
         self.setCordsAgent(f,c)
         
         if orientation:
-            print(self.CoordsAgent,orientation)
+            # print(self.CoordsAgent,orientation)
             self.__paintCellsNeighbors(f,c)
         
-        self.__paintCellCord(f, c)
+        self.paintCellCord(f, c)
         self.canva.create_line(c*self.SideCellPX,f*self.SideCellPX,(c*self.SideCellPX)+self.SideCellPX,(f*self.SideCellPX)+self.SideCellPX)
         self.canva.create_line(c*self.SideCellPX,(f*self.SideCellPX)+self.SideCellPX,(c*self.SideCellPX)+self.SideCellPX,f*self.SideCellPX)
             
         self.canva.pack() # no quitar esta linea
 
 
+class HumanoFrame(TableroFrame):
+    
+    def __init__(self, master: Tk, matrix_laberinto, cells_side: int, size_px: int) -> None:
+        super().__init__(master, matrix_laberinto, cells_side, size_px)
+    
+    def paintCellCord(self, f: int, c: int):
+        if self.Matrix_Laberinto[f][c] == 1:
+            self.drawCellCord(f, c, PINK, BLACK)
+        elif self.Matrix_Laberinto[f][c] == 2:
+            self.drawCellCord(f, c, BLUE, BLACK)
+        elif self.Matrix_Laberinto[f][c] == 3:
+            self.drawCellCord(f, c, YELLOW, BLACK)
+        elif self.Matrix_Laberinto[f][c] == 4:
+            self.drawCellCord(f, c, GREEN, BLACK)
+        else:
+            self.drawCellCord(f, c, BLACK, BLACK)
+
+
+class MonkeyFrame(TableroFrame):
+
+    def __init__(self, master: Tk, matrix_laberinto, cells_side: int, size_px: int) -> None:
+        super().__init__(master, matrix_laberinto, cells_side, size_px)
+
+    def paintCellCord(self, f: int, c: int):
+
+        if self.Matrix_Laberinto[f][c] == 2:
+            self.drawCellCord(f, c, PINK, BLACK)
+        elif self.Matrix_Laberinto[f][c] == 4:
+            self.drawCellCord(f, c, BLUE, BLACK)
+        elif self.Matrix_Laberinto[f][c] == 3:
+            self.drawCellCord(f, c, YELLOW, BLACK)
+        elif self.Matrix_Laberinto[f][c] == 1:
+            self.drawCellCord(f, c, GREEN, BLACK)
+        else:
+            self.drawCellCord(f, c, BLACK, BLACK)
+
+
+class OctopusFrame(TableroFrame):
+
+    def __init__(self, master: Tk, matrix_laberinto, cells_side: int, size_px: int) -> None:
+        super().__init__(master, matrix_laberinto, cells_side, size_px)
+
+    def paintCellCord(self, f: int, c: int):
+
+        if self.Matrix_Laberinto[f][c] == 2:
+            self.drawCellCord(f, c, PINK, BLACK)
+        elif self.Matrix_Laberinto[f][c] == 1:
+            self.drawCellCord(f, c, BLUE, BLACK)
+        elif self.Matrix_Laberinto[f][c] == 3:
+            self.drawCellCord(f, c, GREEN, BLACK)
+        else:
+            self.drawCellCord(f, c, BLACK, BLACK)
+
+
+class SasquatchFrame(TableroFrame):
+
+    def __init__(self, master: Tk, matrix_laberinto, cells_side: int, size_px: int) -> None:
+        super().__init__(master, matrix_laberinto, cells_side, size_px)
+
+    def paintCellCord(self, f: int, c: int):
         
+        if self.Matrix_Laberinto[f][c] == 15:
+            self.drawCellCord(f, c, GRAY, BLACK)
+        elif self.Matrix_Laberinto[f][c] == 4:
+            self.drawCellCord(f, c, GREEN, BLACK)
+        else:
+            self.drawCellCord(f, c, BLACK, BLACK)
+            
 if __name__ == '__main__':
     root=Tk()
     root.title("Ejemplo de canvas")
-    app=TableroFrame(root,np.zeros((20,20),dtype=int),20,700)
+    matriz_terreno = np.loadtxt("Sasquatch.txt", dtype=int)
+    app = SasquatchFrame(root,matriz_terreno, matriz_terreno.shape[0], 700)
     app.render()
     app.mainloop()
     
